@@ -25,7 +25,7 @@ const Chat: React.FC = () => {
       <div className="chat">
         <div id="messages">
           {messages.map((m, i) => (
-            <div key={i}>{m}</div>
+            <div key={i} className={i % 2 === 0 ? "message-even" : "message-odd"}>{m}</div>
           ))}
         </div>
         <input
