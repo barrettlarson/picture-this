@@ -1,7 +1,9 @@
 import "./index.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Chat from "./Chat";
+import GameHeader from "./GameHeader";
 import Toolbar from "./Toolbar";
+import Users from "./Users";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -244,47 +246,44 @@ function App() {
       <header className="pt">
         <h1>PictureThis!</h1>
       </header>
-      <div className="top-bar">
-        <p>120</p>
-        <div className="guess">
-          <p>Guess This</p>
-          <p>_ _ _ _ _ _ _ _</p>
-        </div>
-      </div>
       <div className="main">
-        <canvas
-          width={1000}
-          height={700}
-          ref={canvasRef}
-          id="canvas"
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-          style={{
-            border: "2px solid black",
-            cursor: cursorStyle,
-            touchAction: "none",
-          }}
-        />
+        <Users></Users>
+        <div className="canvas-area">
+          <GameHeader timeLeft={120} word="________" />
+          <canvas
+            width={1000}
+            height={700}
+            ref={canvasRef}
+            id="canvas"
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={draw}
+            onTouchEnd={stopDrawing}
+            style={{
+              border: "2px solid black",
+              cursor: cursorStyle,
+              touchAction: "none",
+            }}
+          />
+          <Toolbar
+            color={color}
+            onColorSelect={handleColorSelect}
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            onRecentClick={handleRecentClick}
+            brushSize={brushSize}
+            onBrushSizeChange={setBrushSize}
+            mode={mode}
+            onModeChange={setMode}
+            onUndo={undo}
+            onTrash={clearCanvas}
+          />
+        </div>
         <Chat></Chat>
       </div>
-      <Toolbar
-        color={color}
-        onColorSelect={handleColorSelect}
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-        onRecentClick={handleRecentClick}
-        brushSize={brushSize}
-        onBrushSizeChange={setBrushSize}
-        mode={mode}
-        onModeChange={setMode}
-        onUndo={undo}
-        onTrash={clearCanvas}
-      />
     </>
   );
 }
