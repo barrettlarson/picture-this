@@ -134,6 +134,7 @@ function Toolbar({
               className={mode === "draw" ? "active" : ""}
               onClick={() => onModeChange("draw")}
             >
+              <span className="shortcut">B</span>
               <svg
                 width="24"
                 height="24"
@@ -164,6 +165,7 @@ function Toolbar({
               className={mode === "fill" ? "active" : ""}
               onClick={() => onModeChange("fill")}
             >
+              <span className="shortcut">F</span>
               <svg
                 width="24"
                 height="24"
@@ -187,6 +189,7 @@ function Toolbar({
           </div>
           <div className="undo-or-trash">
             <button id="undo" onClick={onUndo}>
+              <span className="shortcut">U</span>
               <svg
                 width="24"
                 height="24"
@@ -203,6 +206,7 @@ function Toolbar({
               </svg>
             </button>
             <button id="trash" onClick={onTrash}>
+              <span className="shortcut">C</span>
               <svg
                 width="24"
                 height="24"

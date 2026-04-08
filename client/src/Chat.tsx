@@ -1,50 +1,71 @@
-import React, { useState, type FormEvent } from "react";
+import React, { useEffect, useRef, useState, type FormEvent } from "react";
+import type { ChatMessage, GamePhase } from "./types";
 
-const Chat: React.FC = () => {
+interface ChatProps {
+  messages: ChatMessage[];
+  onSend: (text: string) => void;
+  disabled: boolean;
+  phase: GamePhase;
+}
+
+const Chat: React.FC<ChatProps> = ({ messages, onSend, disabled, phase }) => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
-  const username = "testuser";
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  function postMessage(e: FormEvent) {
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const message = username + ": " + input.trim();
-    if (!message) return;
-    setMessages((prev) => [...prev, message]);
+    const text = input.trim();
+    if (!text) return;
+    onSend(text);
     setInput("");
-    console.log("Message sent!");
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      postMessage(e as unknown as FormEvent);
+      handleSubmit(e as unknown as FormEvent);
     }
   }
 
   return (
-    <>
-      <div className="chat">
-        <div id="messages">
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              className={i % 2 === 0 ? "message-even" : "message-odd"}
-            >
-              {m}
+    <div className="chat">
+      <div id="messages">
+        {messages.map((m, i) => {
+          let className = i % 2 === 0 ? "message-even" : "message-odd";
+          if (m.type === "system") className += " message-system";
+          if (m.type === "correct") className += " message-correct";
+          if (m.type === "close") className += " message-close";
+
+          return (
+            <div key={m.id} className={className}>
+              {m.type === "chat" && <strong>{m.username}: </strong>}
+              {m.type === "chat" ? m.text : m.text}
             </div>
-          ))}
-        </div>
-        <input
-          id="message-input"
-          type="text"
-          placeholder="Type your guess here..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          autoComplete="off"
-        />
+          );
+        })}
+        <div ref={messagesEndRef} />
       </div>
-    </>
+      <input
+        id="message-input"
+        type="text"
+        placeholder={
+          disabled
+            ? "You are drawing!"
+            : phase === "lobby"
+              ? "Chat..."
+              : "Type your guess here..."
+        }
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={disabled}
+        autoComplete="off"
+      />
+    </div>
   );
 };
 
